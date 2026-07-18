@@ -1,0 +1,14 @@
+# Virtual env
+.venv
+
+# Python cache et al
+__pycache__/
+*.egg-info/
+*.egg
+
+# Build dirs
+build/
+docs/_build/
+
+# Codium
+.vscode
