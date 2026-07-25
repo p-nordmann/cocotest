@@ -5,10 +5,15 @@
 __pycache__/
 *.egg-info/
 *.egg
+.pytest_cache
 
 # Build dirs
 build/
+sim_build/
 docs/_build/
 
 # Codium
 .vscode
+
+# Other
+.DS_Store
