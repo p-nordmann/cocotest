@@ -1,4 +1,3 @@
-import os
 from dataclasses import dataclass
 from types import ModuleType
 from typing import Any, Callable, NamedTuple
@@ -12,7 +11,7 @@ class TestModule(NamedTuple):
 @dataclass
 class DUTSpec:
     simulator: str
-    sources: list[os.PathLike[str]]
+    sources: list[str]
     hdl_toplevel: str
     lang: str
     build_args: list[str]
