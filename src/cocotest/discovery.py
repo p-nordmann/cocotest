@@ -59,6 +59,7 @@ def discover_duts(test_modules: list[TestModule]) -> DUTSpecIndex:
     return index
 
 
+# TODO: handle Test and Parameterized types from cocotb
 def discover_test_cases(
     test_modules: list[TestModule], dut_index: DUTSpecIndex
 ) -> list[TestCase]:

@@ -8,6 +8,7 @@ import os
 import sys
 
 import cocotb
+from cocotb.handle import HierarchyObject
 
 from .utils import get_module_name, import_from_path
 
@@ -22,7 +23,15 @@ module_name = get_module_name(module_path)
 module = import_from_path(module_path, module_name)
 function = getattr(module, function_name)
 
-# Mark the test function as a test for cocotb
-selected_test = cocotb.test(
-    name=f"cocotest_{function_name}",
-)(function)
+
+# Wrap the test case into a function marked for cocotb
+# TODO preprocess fixtures here
+@cocotb.test(name=function_name)
+async def testcase(dut: HierarchyObject):
+    return await function(dut)
+
+
+# Hack the module name for display
+module_name_short = os.path.basename(module_path)[:-3]
+testcase.module = module_name_short
+testcase.fullname = f"{module_name_short}.{function_name}"

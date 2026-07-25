@@ -30,7 +30,6 @@ def run_test(test_case: TestCase):
         hdl_toplevel=dut.hdl_toplevel,
         hdl_toplevel_library="work",
         hdl_toplevel_lang=dut.lang,
-        testcase=f"cocotest_{function_name}",
         elab_args=dut.elab_args,
         test_args=dut.extra_args,
         extra_env={
@@ -40,4 +39,5 @@ def run_test(test_case: TestCase):
         },
         build_dir=build_dir,
         test_dir=build_dir,  # WARNING: must be the same as build_dir
+        test_filter=f"\.{function_name}$",
     )
