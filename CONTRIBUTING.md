@@ -10,7 +10,47 @@ Contributions are closed for now.
 
 ## Roadmap
 
+### Documentation
+
+<u>**Difficulty:**</u> ⭐ (easy)
+
+TODO
+
+### Test skipping
+
+<u>**Difficulty:**</u> ⭐ (easy)
+
+This feature will be simple: decorate a test with `cocotest.skip` in order to skip it.
+
+```
+@cocotest.skip
+async def test_my_super_test(dut):
+    ...
+```
+
+Currently this is not implemented.
+
+### Fixtures
+
+<u>**Difficulty:**</u> ⭐/⭐⭐ (easy to medium)
+
+TODO
+
+### Filtering: `-k` parameter
+
+<u>**Difficulty:**</u> ⭐/⭐⭐ (easy to medium)
+
+TODO
+
+### Avoiding virtual environment directories
+
+<u>**Difficulty:**</u> ⭐/⭐⭐ (easy to medium)
+
+TODO
+
 ### Imports from within test files during cocotb discovery
+
+<u>**Difficulty:**</u> ⭐⭐ (medium)
 
 #### Current state
 
@@ -52,30 +92,20 @@ Boundaries would be:
 - a VCS root (parent to a .git folder),
 - the starting directory.
 
-## Fixtures
+### Logging
+
+<u>**Difficulty:**</u> ⭐⭐⭐ (hard)
 
 TODO
 
-## Multiprocessing: `-j` parameter
+### Multiprocessing: `-j` parameter
+
+<u>**Difficulty:**</u> ⭐⭐⭐ (hard)
 
 TODO
 
-## Filtering: `-k` parameter
+### Debugger frontend
 
-TODO
-
-## Test skipping
-
-TODO
-
-## Logging
-
-TODO
-
-## Debugger frontend
-
-TODO
-
-## Documentation
+<u>**Difficulty:**</u> ⭐⭐⭐ (hard)
 
 TODO
