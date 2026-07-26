@@ -12,4 +12,5 @@ dut = DUTSpec(
 
 
 async def test_heartbeat_pass(dut: DUTSpec):
+    print("Inside test: test_heartbeat_pass")
     pass
