@@ -1,6 +1,6 @@
 # Contributing
 
-This file explains what you need to know in order to contribute to the project.
+This file will explain what you need to know in order to contribute to the project.
 
 TODO
 
@@ -14,7 +14,9 @@ Contributions are closed for now.
 
 <u>**Difficulty:**</u> ⭐ (easy)
 
-TODO
+We need to setup a documentation system so we can generate docs from the current state of the repository.
+
+In particular, we want to document all current features. This should not be too long as there are very few.
 
 ### Test skipping
 
@@ -36,11 +38,24 @@ Currently this is not implemented.
 
 TODO
 
-### Filtering: `-k` parameter
+### Filtering: `-k` option in the command line
 
 <u>**Difficulty:**</u> ⭐/⭐⭐ (easy to medium)
 
-TODO
+Currently, we can only specify a directory or a file path when running cocotest.
+
+We want to provide a finer way to filter tests with the `-k` option in the command line, similar to pytest.
+
+We want to support exact substring match across file names, test names, dut names.
+On top of that we want to support simple combination of patterns with `and`, `or` and `not` keywords.
+
+Example:
+
+```
+cocotest -k 'my_dut and not some_test'
+```
+
+Note: it is left to be specified whether the `-k` option should take priority over test skipping.
 
 ### Avoiding virtual environment directories
 
