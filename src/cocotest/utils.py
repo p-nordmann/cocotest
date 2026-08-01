@@ -51,7 +51,7 @@ def is_test_case(
 
     if dut_args_count > 1:
         raise DefinitionError(
-            f"test-case {candidate.__name__} requires {dut_args_count} duts"
+            f"test case {candidate.__name__} requires {dut_args_count} duts"
         )
 
     return True
