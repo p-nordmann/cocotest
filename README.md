@@ -18,7 +18,7 @@ Currently, we do not provide a distribution on PyPI, but we intend to change tha
 
 For now, you may install from the Github repository instead. Example with uv or pip:
 
-```
+```sh
 # You may target master:
 uv add "cocotest @ git+https://github.com/p-nordmann/cocotest"
 
@@ -33,7 +33,7 @@ pip install git+https://github.com/p-nordmann/cocotest@some_revision
 
 Once cocotest is installed, you can run your tests with the following command:
 
-```
+```sh
 cocotest /path/to/tests
 
 # Or with uv:
@@ -42,7 +42,7 @@ uv run cocotest /path/to/tests
 
 Of course, you need to write your tests in such a way that cocotest knows what to do with them:
 
-```
+```Python
 from cocotb.handle import HierarchyObject
 
 from cocotest import DUTSpec
@@ -99,7 +99,7 @@ For that reason, you need to install ghdl if you want to be able to run all of t
 
 Once you have all the dependencies installed, you can run the tests using pytest:
 
-```
+```sh
 # with uv:
 uv run pytest tests
 

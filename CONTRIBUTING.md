@@ -24,7 +24,7 @@ In particular, we want to document all current features. This should not be too 
 
 This feature will be simple: decorate a test with `cocotest.skip` in order to skip it.
 
-```
+```Python
 @cocotest.skip
 async def test_my_super_test(dut):
     ...
@@ -51,7 +51,7 @@ On top of that we want to support simple combination of patterns with `and`, `or
 
 Example:
 
-```
+```sh
 cocotest -k 'my_dut and not some_test'
 ```
 
