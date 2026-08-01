@@ -36,6 +36,7 @@ def run_test(test_case: TestCase):
             "COCOTEST_IMPORT_ROOT": import_root,
             "COCOTEST_TEST_MODULE": module_path,
             "COCOTEST_TEST_FUNCTION": function_name,
+            "COCOTEST_CWD": os.getcwd(),
         },
         build_dir=build_dir,
         test_dir=build_dir,  # WARNING: must be the same as build_dir

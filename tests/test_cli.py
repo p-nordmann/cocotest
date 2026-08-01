@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 
@@ -39,3 +40,11 @@ def test_heartbeat_should_not_run():
 
     # Make sure we returned a correct exit code.
     assert code == 0
+
+
+def test_cwd_should_be_the_same():
+    code, output = _invoke("testbench/test_heartbeat_3.py")
+
+    # We make sure that the test runs and prints the same cwd value as here.
+    assert "Inside test: test_heartbeat_getcwd\n" in output
+    assert f"os.getcwd: {os.getcwd()}\n" in output

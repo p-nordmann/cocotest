@@ -28,6 +28,14 @@ function = getattr(module, function_name)
 # TODO preprocess fixtures here
 @cocotb.test(name=function_name)
 async def testcase(dut: HierarchyObject):
+
+    # Make sure to retrieve the expected working directory from the
+    # environment variables and change current working directory.
+    # Otherwise, we get the current working directory from the simulator,
+    # which will most likely not match the expected working directory in
+    # the test case.
+    os.chdir(os.environ["COCOTEST_CWD"])
+
     return await function(dut)
 
 
