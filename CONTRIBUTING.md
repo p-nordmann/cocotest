@@ -32,6 +32,8 @@ async def test_my_super_test(dut):
 
 Currently this is not implemented.
 
+Bonus: also implement `xfail`.
+
 ### Fixtures
 
 <u>**Difficulty:**</u> ⭐/⭐⭐ (easy to medium)
@@ -107,6 +109,24 @@ Boundaries would be:
 - a VCS root (parent to a .git folder),
 - the starting directory.
 
+### Parameters/Generics
+
+<u>**Difficulty:**</u> ⭐⭐⭐ (hard)
+
+We want to add support for parameters (Verilog, SystemVerilog) and generics (VHDL).
+This would allow to build unit tests where the DUT is provided arbitrary generics.
+
+This is actually difficult: generics support in cocotb is shallow and most simulators' support for command-line generics is poor.
+
+Instead of relying on each simulator's features, we need to patch the DUT's top-level entity with provided generics.
+This requires finding the file defining the entity, copying it, locating the appropriate generics and giving them default values.
+
+This is why it is difficult; implementing this feature requires:
+
+- Writing a tokenizer and scanner for VHDL and SV.
+- Writing a nice generics library in Python with types (not raw strings for the generics values).
+- Implementing the copying/patching part.
+
 ### Logging
 
 <u>**Difficulty:**</u> ⭐⭐⭐ (hard)
@@ -117,7 +137,14 @@ TODO
 
 <u>**Difficulty:**</u> ⭐⭐⭐ (hard)
 
-TODO
+We want to provide the opportunity to use a pool of workers.
+
+Because each simulator is launched as a subprocess, we could try launching them in parallel (for the simulators which support that, for instance ghdl).
+
+There is not much to describe here.
+This feature depends on the "Logging" feature.
+As-is, we cannot parallelize because logs from different workers would be mixed.
+This is why we must solve logging first, and then adapt it to handle multiple workers in parallel.
 
 ### Debugger frontend
 
