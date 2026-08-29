@@ -6,6 +6,8 @@ from importlib.util import module_from_spec, spec_from_file_location
 from types import FunctionType, ModuleType
 from typing import Any
 
+import psutil
+
 from .core_types import DUTSpec
 from .errors import DefinitionError, DiscoveryError
 
@@ -63,3 +65,28 @@ def get_test_dut(fx: FunctionType, *, duts: dict[str, DUTSpec]) -> DUTSpec:
         if name in duts:
             return duts[name]
     raise RuntimeError("dut not found")
+
+
+def terminate_session():
+    """Kills all the processes of the current cocotest session.
+
+    Heavily inspired by the "Kill process tree" example from psutil's documentation.
+    """
+    if "COCOTEST_SESSION" not in os.environ or os.environ["COCOTEST_SESSION"] is None:
+        return
+
+    session_procs = []
+    for p in psutil.process_iter():
+        try:
+            if p.environ().get("COCOTEST_SESSION") == os.environ["COCOTEST_SESSION"]:
+                session_procs.append(p)
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            pass
+
+    for p in session_procs:
+        if p.pid == os.getpid():
+            continue
+        try:
+            p.kill()
+        except psutil.NoSuchProcess:
+            pass
