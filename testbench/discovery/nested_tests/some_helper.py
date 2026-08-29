@@ -9,7 +9,6 @@ dut_3 = DUTSpec(
     "vhdl",
     [],
     [],
-    [],
 )
 
 

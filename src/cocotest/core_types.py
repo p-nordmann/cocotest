@@ -15,8 +15,7 @@ class DUTSpec:
     hdl_toplevel: str
     lang: str
     build_args: list[str]
-    elab_args: list[str]
-    extra_args: list[str]
+    test_args: list[str]
 
 
 @dataclass(frozen=True)

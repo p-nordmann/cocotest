@@ -24,8 +24,7 @@ def run_test(case: TestCase):
         hdl_toplevel=case.dut.hdl_toplevel,
         hdl_toplevel_library="work",
         hdl_toplevel_lang=case.dut.lang,
-        elab_args=case.dut.elab_args,
-        test_args=case.dut.extra_args,
+        test_args=case.dut.test_args,
         extra_env={
             "COCOTEST_IMPORT_ROOT": os.getcwd(),
             "COCOTEST_TEST_MODULE": os.path.abspath(case.path),

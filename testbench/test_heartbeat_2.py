@@ -9,7 +9,6 @@ dut = DUTSpec(
     "vhdl",
     ["--std=08"],
     ["--std=08"],
-    [],
 )
 
 

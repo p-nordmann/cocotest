@@ -10,7 +10,6 @@ dut_4 = DUTSpec(
     "vhdl",
     [],
     [],
-    [],
 )
 
 dut_5 = DUTSpec(
@@ -18,7 +17,6 @@ dut_5 = DUTSpec(
     ["testbench/heartbeat.vhd"],
     "heartbeat",
     "vhdl",
-    [],
     [],
     [],
 )
