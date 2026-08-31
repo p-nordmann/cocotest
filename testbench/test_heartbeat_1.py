@@ -1,4 +1,5 @@
 from cocotb.handle import HierarchyObject
+from cocotb.triggers import Timer
 
 from cocotest import DUTSpec
 
@@ -14,4 +15,4 @@ dut = DUTSpec(
 
 async def test_heartbeat_pass(dut: HierarchyObject):
     print("Inside test: test_heartbeat_pass")
-    pass
+    await Timer(1, unit="us")

@@ -1,6 +1,7 @@
 import os
 
 from cocotb.handle import HierarchyObject
+from cocotb.triggers import Timer
 
 from cocotest import DUTSpec
 
@@ -17,4 +18,4 @@ dut = DUTSpec(
 async def test_heartbeat_getcwd(dut: HierarchyObject):
     print("Inside test: test_heartbeat_getcwd")
     print(f"os.getcwd: {os.getcwd()}")
-    pass
+    await Timer(1, unit="us")
