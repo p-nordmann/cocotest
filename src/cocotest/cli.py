@@ -7,7 +7,7 @@ from uuid import uuid4
 
 from .core_types import TestCase
 from .discovery import discover_duts, discover_test_cases, discover_test_modules
-from .execution import run_test
+from .execution import TestStatus, run_test
 from .utils import terminate_session
 
 
@@ -32,10 +32,10 @@ def main():
     cases = discover_test_cases(test_modules, dut_index)
 
     # Process test cases
-    run_tests_and_cleanup(cases)
+    raise SystemExit(run_tests_and_cleanup(cases))
 
 
-def run_tests_and_cleanup(cases: list[TestCase]):
+def run_tests_and_cleanup(cases: list[TestCase]) -> int:
     """Prepares the environment for running tests and makes sure to terminate
     subprocesses upon interruption.
 
@@ -48,6 +48,8 @@ def run_tests_and_cleanup(cases: list[TestCase]):
     a COCOTEST_SESSION environment variable before spawning them, so they inherit
     it automatically. Then, when being terminated, we look for all the processes
     with the correct COCOTEST_SESSION and kill them.
+
+    Returns an exit code.
     """
 
     # We raise a custom exception on SIGINT and SIGTERM
@@ -65,9 +67,18 @@ def run_tests_and_cleanup(cases: list[TestCase]):
 
     # Then we wrap the actual tests into try, except, finally
     try:
+        results = []
         for case in cases:
-            run_test(case)
+            result = run_test(case)
+            print(f"{case.node_id}: {result.status.name}")
+            results.append(result)
     except Terminate:
         terminate_session()
+        return 2
     finally:
         os.environ.pop("COCOTEST_SESSION", None)
+
+    for result in results:
+        if result.status != TestStatus.PASS:
+            return 1
+    return 0
