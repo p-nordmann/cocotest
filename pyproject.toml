@@ -18,3 +18,8 @@ build-backend = "uv_build"
 
 [dependency-groups]
 dev = ["pytest>=9.1.1"]
+
+[tool.pytest.ini_options]
+# We use the pytest option below to make sure that pytest does not try
+# to interpret Cocotest's TestXxx classes as actual tests.
+collect_imported_tests = false
