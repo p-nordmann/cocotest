@@ -48,13 +48,12 @@ from cocotb.handle import HierarchyObject
 from cocotest import DUTSpec
 
 dut = DUTSpec(
-    "ghdl",
-    ["testbench/heartbeat.vhd"],
-    "heartbeat",
-    "vhdl",
-    ["--std=08"],
-    ["--std=08"],
-    [],
+    simulator="ghdl",
+    sources=["testbench/heartbeat.vhd"],
+    hdl_toplevel="heartbeat",
+    lang="vhdl",
+    build_args=["--std=08"],
+    test_args=["--std=08"],
 )
 
 
