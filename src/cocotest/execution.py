@@ -71,7 +71,7 @@ def run_test(case: TestCase) -> TestResult:
             return TestResult(
                 TestStatus.RUNTIME_ERROR,
                 os.path.join(build_dir, "build_logs.log"),
-                test_log=os.path.join(build_dir, "test_logs.log"),
+                os.path.join(build_dir, "test_logs.log"),
             )
 
         total, failures = get_results(results_path)
@@ -79,7 +79,7 @@ def run_test(case: TestCase) -> TestResult:
     return TestResult(
         TestStatus.PASS if failures == 0 else TestStatus.FAIL,
         os.path.join(build_dir, "build_logs.log"),
-        test_log=os.path.join(build_dir, "test_logs.log"),
+        os.path.join(build_dir, "test_logs.log"),
     )
 
 
