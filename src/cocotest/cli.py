@@ -2,10 +2,10 @@ import argparse
 import os
 import signal
 import sys
+from contextlib import contextmanager
 from types import FrameType
 from uuid import uuid4
 
-from .core_types import TestCase
 from .discovery import discover_duts, discover_test_cases, discover_test_modules
 from .execution import TestStatus, run_test
 from .utils import terminate_session
@@ -31,20 +31,29 @@ def main():
     dut_index = discover_duts(test_modules)
     cases = discover_test_cases(test_modules, dut_index)
 
-    # Process test cases
-    raise SystemExit(run_tests_and_cleanup(cases))
+    # Note: in the case of some simulators, it seems that SIGINT is ignored by the
+    # subprocesses when cocotb is terminated. This can be painful when developing
+    # testbenches, so we make sure to kill the subprocesses when we receive SIGINT or SIGTERM.
+    with _with_termination_cleanup():
+        # Run test cases and exit with an error code.
+        results = []
+        for case in cases:
+            result = run_test(case)
+            print(f"{case.node_id}: {result.status.name}")
+            results.append(result)
+
+        for result in results:
+            if result.status != TestStatus.PASS:
+                raise SystemExit(1)
+        raise SystemExit(0)
 
 
-def run_tests_and_cleanup(cases: list[TestCase]) -> int:
+@contextmanager
+def _with_termination_cleanup():
     """Prepares the environment for running tests and makes sure to terminate
     subprocesses upon interruption.
 
-    In the case of some simulators, it seems that SIGINT is ignored by the
-    subprocesses when cocotb is terminated. This can be painful when developing
-    testbenches, so we make sure to kill the subprocesses when we receive
-    SIGINT or SIGTERM.
-
-    In order to find all the corresponding subprocesses, we use a trick: we add
+    In order to find all the subprocesses that we should kill, we use a trick: we add
     a COCOTEST_SESSION environment variable before spawning them, so they inherit
     it automatically. Then, when being terminated, we look for all the processes
     with the correct COCOTEST_SESSION and kill them.
@@ -65,20 +74,11 @@ def run_tests_and_cleanup(cases: list[TestCase]) -> int:
     # Here we prepare the environment variable
     os.environ["COCOTEST_SESSION"] = uuid4().hex
 
-    # Then we wrap the actual tests into try, except, finally
+    # Then we wrap the actual logic, except, finally
     try:
-        results = []
-        for case in cases:
-            result = run_test(case)
-            print(f"{case.node_id}: {result.status.name}")
-            results.append(result)
+        yield
     except Terminate:
         terminate_session()
-        return 2
+        raise SystemExit(2)
     finally:
         os.environ.pop("COCOTEST_SESSION", None)
-
-    for result in results:
-        if result.status != TestStatus.PASS:
-            return 1
-    return 0
