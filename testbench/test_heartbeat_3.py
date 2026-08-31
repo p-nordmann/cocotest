@@ -16,6 +16,5 @@ dut = DUTSpec(
 
 
 async def test_heartbeat_getcwd(dut: HierarchyObject):
-    print("Inside test: test_heartbeat_getcwd")
     assert os.getcwd() == os.environ["TEST_EXPECTED_CWD"]
     await Timer(1, unit="us")
