@@ -29,7 +29,7 @@ def cases():
 def test_test_python_error(cases: dict[str, TestCase]):
     case_python_error = cases["test_python_error"]
     result = run_test(case_python_error)
-    assert result.status == TestStatus.FAIL, result.test_log
+    assert result.status == TestStatus.FAIL
 
 
 def test_test_build_error(cases: dict[str, TestCase]):

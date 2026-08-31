@@ -6,7 +6,7 @@ from cocotest import DUTSpec
 # Regular heartbeat, no RTL error here.
 dut_heartbeat = DUTSpec(
     "ghdl",
-    ["testbench/heartbeat.vhd"],
+    ["testbench/heartbeat/heartbeat.vhd"],
     "heartbeat",
     "vhdl",
     ["--std=08"],

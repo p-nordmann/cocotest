@@ -5,7 +5,7 @@ from cocotest import DUTSpec
 
 dut = DUTSpec(
     "ghdl",
-    ["testbench/heartbeat.vhd"],
+    ["testbench/heartbeat/heartbeat.vhd"],
     "heartbeat",
     "vhdl",
     ["--std=08"],
