@@ -75,18 +75,11 @@ def terminate_session():
     if "COCOTEST_SESSION" not in os.environ or os.environ["COCOTEST_SESSION"] is None:
         return
 
-    session_procs = []
     for p in psutil.process_iter():
-        try:
-            if p.environ().get("COCOTEST_SESSION") == os.environ["COCOTEST_SESSION"]:
-                session_procs.append(p)
-        except (psutil.NoSuchProcess, psutil.AccessDenied):
-            pass
-
-    for p in session_procs:
         if p.pid == os.getpid():
             continue
         try:
-            p.kill()
-        except psutil.NoSuchProcess:
+            if p.environ().get("COCOTEST_SESSION") == os.environ["COCOTEST_SESSION"]:
+                p.kill()
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
             pass
