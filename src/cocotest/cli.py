@@ -43,7 +43,7 @@ def main():
             results.append(result)
 
         for result in results:
-            if result.status != TestStatus.PASS:
+            if result.is_failure():
                 raise SystemExit(1)
         raise SystemExit(0)
 

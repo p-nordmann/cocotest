@@ -50,3 +50,45 @@ def test_cwd_should_be_the_same():
         "testbench/heartbeat/test_heartbeat_3.py::test_heartbeat_getcwd: PASS" in output
     )
     assert code == 0
+
+
+def test_error_code_failures():
+    code, output = _invoke("testbench/failures/test_failures.py")
+
+    assert "testbench/failures/test_failures.py::test_python_error: FAIL" in output
+    assert (
+        "testbench/failures/test_failures.py::test_build_error: BUILD_ERROR" in output
+    )
+    assert (
+        "testbench/failures/test_failures.py::test_runtime_error: RUNTIME_ERROR"
+        in output
+    )
+    assert code == 1
+
+
+def test_error_code_skip():
+    code, output = _invoke("testbench/failures/test_skip.py")
+
+    assert "testbench/failures/test_skip.py::test_python_error_skipped: SKIP" in output
+    assert code == 0
+
+
+def test_error_code_xfail():
+    code, output = _invoke("testbench/failures/test_xfail_xpass.py")
+
+    assert (
+        "testbench/failures/test_xfail_xpass.py::test_python_error_xfail: XFAIL"
+        in output
+    )
+    assert (
+        "testbench/failures/test_xfail_xpass.py::test_heartbeat_xpass: XPASS" in output
+    )
+    assert (
+        "testbench/failures/test_xfail_xpass.py::test_build_error_xfail: XFAIL"
+        in output
+    )
+    assert (
+        "testbench/failures/test_xfail_xpass.py::test_runtime_error_xfail: XFAIL"
+        in output
+    )
+    assert code == 0

@@ -25,6 +25,14 @@ class TestResult:
     build_log: str | None = None
     test_log: str | None = None
 
+    def is_failure(self):
+        """Returns True if this result should fail the overall test suite."""
+        return self.status in [
+            TestStatus.FAIL,
+            TestStatus.BUILD_ERROR,
+            TestStatus.RUNTIME_ERROR,
+        ]
+
 
 def run_test(case: TestCase) -> TestResult:
     xskip = getattr(case.function, "_cocotest_skip", False)
