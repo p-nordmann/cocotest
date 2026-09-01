@@ -11,8 +11,13 @@ class Mark(SimpleNamespace):
     @staticmethod
     def skip(fn: Callable[P, Awaitable[T]]) -> Callable[P, Awaitable[T]]:
         """Notifies cocotest that a test must be skipped."""
-
         setattr(fn, "_cocotest_skip", True)
+        return fn
+
+    @staticmethod
+    def xfail(fn: Callable[P, Awaitable[T]]) -> Callable[P, Awaitable[T]]:
+        """Marks a test function as expected to fail."""
+        setattr(fn, "_cocotest_xfail", True)
         return fn
 
 

@@ -46,3 +46,23 @@ def test_python_error_skipped(cases: dict[str, TestCase]):
     case_python_error_skipped = cases["test_python_error_skipped"]
     result = run_test(case_python_error_skipped)
     assert result.status == TestStatus.SKIP
+
+
+def test_python_error_xfail(cases: dict[str, TestCase]):
+    case_python_error_xfail = cases["test_python_error_xfail"]
+    assert run_test(case_python_error_xfail).status == TestStatus.XFAIL
+
+
+def test_test_build_error_xfail(cases: dict[str, TestCase]):
+    case_build_error_xfail = cases["test_build_error_xfail"]
+    assert run_test(case_build_error_xfail).status == TestStatus.XFAIL
+
+
+def test_test_runtime_error_xfail(cases: dict[str, TestCase]):
+    case_runtime_error_xfail = cases["test_runtime_error_xfail"]
+    assert run_test(case_runtime_error_xfail).status == TestStatus.XFAIL
+
+
+def test_test_heartbeat_xpass(cases: dict[str, TestCase]):
+    case_heartbeat_xpass = cases["test_heartbeat_xpass"]
+    assert run_test(case_heartbeat_xpass).status == TestStatus.XPASS
