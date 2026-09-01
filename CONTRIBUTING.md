@@ -18,22 +18,6 @@ We need to setup a documentation system so we can generate docs from the current
 
 In particular, we want to document all current features. This should not be too long as there are very few.
 
-### Test skipping
-
-<u>**Difficulty:**</u> ⭐ (easy)
-
-This feature will be simple: decorate a test with `cocotest.skip` in order to skip it.
-
-```Python
-@cocotest.skip
-async def test_my_super_test(dut):
-    ...
-```
-
-Currently this is not implemented.
-
-Bonus: also implement `xfail`.
-
 ### Fixtures
 
 <u>**Difficulty:**</u> ⭐/⭐⭐ (easy to medium)
