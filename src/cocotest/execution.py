@@ -14,6 +14,7 @@ class TestStatus(StrEnum):
     FAIL = "fail"
     BUILD_ERROR = "build_error"
     RUNTIME_ERROR = "runtime_error"
+    SKIP = "skip"
 
 
 @dataclass(frozen=True)
@@ -24,6 +25,11 @@ class TestResult:
 
 
 def run_test(case: TestCase) -> TestResult:
+
+    if getattr(case.function, "_cocotest_skip", False):
+        # The test is marked for skipping.
+        return TestResult(TestStatus.SKIP)
+
     build_dir = os.path.join(
         "sim_build", case.module.__name__, case.function.__name__
     )  # TODO: one build dir per dut?

@@ -40,3 +40,9 @@ def test_test_build_error(cases: dict[str, TestCase]):
 def test_test_runtime_error(cases: dict[str, TestCase]):
     case_runtime_error = cases["test_runtime_error"]
     assert run_test(case_runtime_error).status == TestStatus.RUNTIME_ERROR
+
+
+def test_python_error_skipped(cases: dict[str, TestCase]):
+    case_python_error_skipped = cases["test_python_error_skipped"]
+    result = run_test(case_python_error_skipped)
+    assert result.status == TestStatus.SKIP
