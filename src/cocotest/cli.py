@@ -7,7 +7,7 @@ from types import FrameType
 from uuid import uuid4
 
 from .discovery import discover_duts, discover_test_cases, discover_test_modules
-from .execution import TestStatus, run_test
+from .execution import run_test
 from .utils import terminate_session
 
 
