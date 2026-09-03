@@ -34,5 +34,14 @@ class Markers(SimpleNamespace):
         Markers.mark(fn, "xfail")
         return fn
 
+    def __getattr__(self, name: str):
+        """Used for custom marks."""
+
+        def marker(fn: Callable[P, Awaitable[T]]) -> Callable[P, Awaitable[T]]:
+            Markers.mark(fn, name)
+            return fn
+
+        return marker
+
 
 mark = Markers()

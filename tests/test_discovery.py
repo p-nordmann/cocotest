@@ -3,6 +3,7 @@ import sys
 
 import pytest
 
+from cocotest.decorators import Markers
 from cocotest.discovery import discover_duts, discover_test_cases, discover_test_modules
 from cocotest.utils import get_module_name
 
@@ -61,3 +62,20 @@ def test_discover_test_cases():
 
     # NOTE: in particular, "test_should_not_be_discovered" should not be in case_names.
     assert "test_should_not_be_discovered_3" not in case_names
+
+
+def test_simple_marks():
+    modules = discover_test_modules("testbench/marks/test_simple_marks.py")
+    dut_index = discover_duts(modules)
+    cases = discover_test_cases(modules, dut_index)
+
+    def find_marks(*marks: str):
+        return {
+            case.function.__name__
+            for case in cases
+            if all(Markers.has_mark(case.function, mark) for mark in marks)
+        }
+
+    assert find_marks("abc") == {"test_mark_abc"}
+    assert find_marks("efg") == {"test_mark_efg"}
+    assert find_marks("hij", "klm") == {"test_mark_hij_klm"}
