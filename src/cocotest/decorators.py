@@ -14,13 +14,17 @@ class Markers(SimpleNamespace):
     @staticmethod
     def mark(fn: Callable[P, Awaitable[T]], mark_name: str):
         fn_marks = getattr(fn, "_cocotest_marks", set())
+        if not isinstance(fn_marks, set):
+            raise ValueError(f"wrong attribute '_cocotest_marks' in '{fn.__name__}'")
         fn_marks.add(mark_name)
         setattr(fn, "_cocotest_marks", fn_marks)
 
     @staticmethod
     def has_mark(fn: Callable[P, Awaitable[T]], mark_name: str):
-        fn_markers = getattr(fn, "_cocotest_marks", set())
-        return mark_name in fn_markers
+        fn_marks = getattr(fn, "_cocotest_marks", set())
+        if not isinstance(fn_marks, set):
+            raise ValueError(f"wrong attribute '_cocotest_marks' in '{fn.__name__}'")
+        return mark_name in fn_marks
 
     @staticmethod
     def skip(fn: Callable[P, Awaitable[T]]) -> Callable[P, Awaitable[T]]:
