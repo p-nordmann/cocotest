@@ -45,16 +45,11 @@ def run_test(case: TestCase) -> TestResult:
     if not xfail:
         return result
 
-    if result.status == TestStatus.PASS:
-        return TestResult(TestStatus.XPASS, result.build_log, result.test_log)
-    if result.status == TestStatus.FAIL:
-        return TestResult(TestStatus.XFAIL, result.build_log, result.test_log)
-    if result.status == TestStatus.BUILD_ERROR:
-        return TestResult(TestStatus.XFAIL, result.build_log, result.test_log)
-    if result.status == TestStatus.RUNTIME_ERROR:
+    # In case of xfail, we mark xfail if the test is failure, otherwise xpass.
+    if result.is_failure():
         return TestResult(TestStatus.XFAIL, result.build_log, result.test_log)
 
-    raise RuntimeError(f"unexpected status '{result.status.name}'")
+    return TestResult(TestStatus.XPASS, result.build_log, result.test_log)
 
 
 def _run_test(case: TestCase) -> TestResult:
