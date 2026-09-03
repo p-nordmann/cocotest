@@ -7,6 +7,7 @@ from subprocess import CalledProcessError
 from cocotb_tools.runner import get_results, get_runner
 
 from .core_types import TestCase
+from .decorators import Markers
 
 
 class TestStatus(StrEnum):
@@ -35,14 +36,11 @@ class TestResult:
 
 
 def run_test(case: TestCase) -> TestResult:
-    xskip = getattr(case.function, "_cocotest_skip", False)
-    xfail = getattr(case.function, "_cocotest_xfail", False)
-
-    if xskip:
+    if Markers.has_mark(case.function, "skip"):
         return TestResult(TestStatus.SKIP)
 
     result = _run_test(case)
-    if not xfail:
+    if not Markers.has_mark(case.function, "xfail"):
         return result
 
     # In case of xfail, we mark xfail if the test is failure, otherwise xpass.
