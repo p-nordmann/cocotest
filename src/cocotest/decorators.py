@@ -15,11 +15,11 @@ class Markers(SimpleNamespace):
     def mark(fn: Callable[P, Awaitable[T]], mark_name: str):
         fn_marks = getattr(fn, "_cocotest_marks", set())
         fn_marks.add(mark_name)
-        setattr(fn, "_cocotest_markers", fn_marks)
+        setattr(fn, "_cocotest_marks", fn_marks)
 
     @staticmethod
     def has_mark(fn: Callable[P, Awaitable[T]], mark_name: str):
-        fn_markers = getattr(fn, "_cocotest_markers", set())
+        fn_markers = getattr(fn, "_cocotest_marks", set())
         return mark_name in fn_markers
 
     @staticmethod
