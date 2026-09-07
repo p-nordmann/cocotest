@@ -7,7 +7,7 @@ from subprocess import CalledProcessError
 from cocotb_tools.runner import get_results, get_runner
 
 from .core_types import TestCase
-from .decorators import get_marks
+from .decorators import _get_marks
 
 
 class TestStatus(StrEnum):
@@ -36,7 +36,7 @@ class TestResult:
 
 
 def run_test(case: TestCase) -> TestResult:
-    marks = get_marks(case.function)
+    marks = _get_marks(case.function)
 
     if "skip" in marks:
         return TestResult(TestStatus.SKIP)
