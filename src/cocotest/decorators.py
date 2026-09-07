@@ -1,51 +1,48 @@
-from types import SimpleNamespace
-from typing import Awaitable, Callable, ParamSpec, TypeVar
+from typing import Awaitable, Callable, ParamSpec, Protocol, TypeVar
 
 P = ParamSpec("P")
 T = TypeVar("T")
 
 
-class Markers(SimpleNamespace):
+class MarkDecorator(Protocol):
+    def __call__(self, fn: Callable[P, Awaitable[T]]) -> Callable[P, Awaitable[T]]: ...
+
+
+def get_marks(fn: Callable[P, Awaitable[T]]) -> frozenset[str]:
+    marks = getattr(fn, "_cocotest_marks", frozenset())
+    if not isinstance(marks, frozenset):
+        raise ValueError(f"wrong attribute '_cocotest_marks' in '{fn.__name__}'")
+    return marks
+
+
+def _add_mark(fn: Callable[P, Awaitable[T]], mark_name: str):
+    marks = get_marks(fn)
+    setattr(fn, "_cocotest_marks", marks | {mark_name})
+
+
+class Mark:
     """Collection of markers."""
-
-    def __init__(self):
-        self._markers = {}
-
-    @staticmethod
-    def mark(fn: Callable[P, Awaitable[T]], mark_name: str):
-        fn_marks = getattr(fn, "_cocotest_marks", set())
-        if not isinstance(fn_marks, set):
-            raise ValueError(f"wrong attribute '_cocotest_marks' in '{fn.__name__}'")
-        fn_marks.add(mark_name)
-        setattr(fn, "_cocotest_marks", fn_marks)
-
-    @staticmethod
-    def has_mark(fn: Callable[P, Awaitable[T]], mark_name: str):
-        fn_marks = getattr(fn, "_cocotest_marks", set())
-        if not isinstance(fn_marks, set):
-            raise ValueError(f"wrong attribute '_cocotest_marks' in '{fn.__name__}'")
-        return mark_name in fn_marks
 
     @staticmethod
     def skip(fn: Callable[P, Awaitable[T]]) -> Callable[P, Awaitable[T]]:
         """Notifies cocotest that a test must be skipped."""
-        Markers.mark(fn, "skip")
+        _add_mark(fn, "skip")
         return fn
 
     @staticmethod
     def xfail(fn: Callable[P, Awaitable[T]]) -> Callable[P, Awaitable[T]]:
         """Marks a test function as expected to fail."""
-        Markers.mark(fn, "xfail")
+        _add_mark(fn, "xfail")
         return fn
 
-    def __getattr__(self, name: str):
+    def __getattr__(self, name: str) -> MarkDecorator:
         """Used for custom marks."""
 
         def marker(fn: Callable[P, Awaitable[T]]) -> Callable[P, Awaitable[T]]:
-            Markers.mark(fn, name)
+            _add_mark(fn, name)
             return fn
 
         return marker
 
 
-mark = Markers()
+mark = Mark()

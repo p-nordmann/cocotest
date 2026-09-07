@@ -3,7 +3,7 @@ import sys
 
 import pytest
 
-from cocotest.decorators import Markers
+from cocotest.decorators import get_marks
 from cocotest.discovery import discover_duts, discover_test_cases, discover_test_modules
 from cocotest.utils import get_module_name
 
@@ -73,7 +73,7 @@ def test_simple_marks():
         return {
             case.function.__name__
             for case in cases
-            if all(Markers.has_mark(case.function, mark) for mark in marks)
+            if all(mark in get_marks(case.function) for mark in marks)
         }
 
     assert find_marks("abc") == {"test_mark_abc"}
