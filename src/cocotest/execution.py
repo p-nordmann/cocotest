@@ -7,6 +7,7 @@ from subprocess import CalledProcessError
 from cocotb_tools.runner import get_results, get_runner
 
 from .core_types import TestCase
+from .decorators import get_marks
 
 
 class TestStatus(StrEnum):
@@ -35,26 +36,20 @@ class TestResult:
 
 
 def run_test(case: TestCase) -> TestResult:
-    xskip = getattr(case.function, "_cocotest_skip", False)
-    xfail = getattr(case.function, "_cocotest_xfail", False)
+    marks = get_marks(case.function)
 
-    if xskip:
+    if "skip" in marks:
         return TestResult(TestStatus.SKIP)
 
     result = _run_test(case)
-    if not xfail:
+    if "xfail" not in marks:
         return result
 
-    if result.status == TestStatus.PASS:
-        return TestResult(TestStatus.XPASS, result.build_log, result.test_log)
-    if result.status == TestStatus.FAIL:
-        return TestResult(TestStatus.XFAIL, result.build_log, result.test_log)
-    if result.status == TestStatus.BUILD_ERROR:
-        return TestResult(TestStatus.XFAIL, result.build_log, result.test_log)
-    if result.status == TestStatus.RUNTIME_ERROR:
+    # In case of xfail, we mark xfail if the test is failure, otherwise xpass.
+    if result.is_failure():
         return TestResult(TestStatus.XFAIL, result.build_log, result.test_log)
 
-    raise RuntimeError(f"unexpected status '{result.status.name}'")
+    return TestResult(TestStatus.XPASS, result.build_log, result.test_log)
 
 
 def _run_test(case: TestCase) -> TestResult:
