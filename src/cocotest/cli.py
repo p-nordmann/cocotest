@@ -19,6 +19,7 @@ def main():
     parser.add_argument(
         "path",
         default=".",
+        nargs="?",
         help="test file or directory",
     )
     args = parser.parse_args()
