@@ -4,6 +4,7 @@ This module serves as an entrypoint for cocotb runner.
 It makes sure to wrap the target test function into cocotb.test
 """
 
+import inspect
 import os
 import sys
 
@@ -37,7 +38,13 @@ async def test_case(dut: HierarchyObject):
     # the test case.
     os.chdir(cocotest_cwd)
 
-    return await function(dut)
+    # Recover the dut name from the function parameters
+    params = inspect.signature(function).parameters
+    if len(params.keys()) != 1:
+        raise AssertionError(f"function {function_name} has too many parameters")
+    dut_name = next(iter(params))
+
+    return await function({dut_name: dut})
 
 
 # Hack the module name for display
