@@ -2,6 +2,7 @@ import hashlib
 import inspect
 import os
 import sys
+import warnings
 from importlib.util import module_from_spec, spec_from_file_location
 from types import FunctionType, ModuleType
 from typing import Any
@@ -9,7 +10,7 @@ from typing import Any
 import psutil
 
 from .core_types import DUTSpec
-from .errors import DefinitionError, DiscoveryError
+from .errors import DiscoveryError
 
 
 def import_from_path(path: str, module_name: str) -> ModuleType:
@@ -42,26 +43,43 @@ def is_test_case(
     if not candidate.__name__.startswith("test_"):
         return False
 
-    args = inspect.signature(candidate).parameters
-    dut_args_count = 0
-    for name in args:
+    params = inspect.signature(candidate).parameters
+    dut_params_count = 0
+    other_params_count = 0
+    for name in params:
         if name in duts:
-            dut_args_count += 1
+            dut_params_count += 1
+        else:
+            other_params_count += 1
 
-    if dut_args_count == 0:
+    if dut_params_count == 0:
         return False
 
-    if dut_args_count > 1:
-        raise DefinitionError(
-            f"test case {candidate.__name__} requires {dut_args_count} duts"
+    filename = inspect.getsourcefile(candidate) or ""
+    _, lineno = inspect.getsourcelines(candidate)
+    if dut_params_count > 1:
+        warnings.warn_explicit(
+            f"test case {candidate.__name__} has {dut_params_count} dut parameters",
+            UserWarning,
+            filename=filename,
+            lineno=lineno,
         )
+        return False
+    if other_params_count > 0:
+        warnings.warn_explicit(
+            f"test case {candidate.__name__} has {other_params_count} non-dut parameters",
+            UserWarning,
+            filename=filename,
+            lineno=lineno,
+        )
+        return False
 
     return True
 
 
 def get_test_dut(fx: FunctionType, *, duts: dict[str, DUTSpec]) -> DUTSpec:
-    args = inspect.signature(fx).parameters
-    for name in args:
+    params = inspect.signature(fx).parameters
+    for name in params:
         if name in duts:
             return duts[name]
     raise RuntimeError("dut not found")

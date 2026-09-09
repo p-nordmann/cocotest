@@ -1,7 +1,7 @@
 from cocotb.handle import HierarchyObject
 
 from cocotest import DUTSpec
-from testbench.discovery.nested_tests.some_helper import dut_3
+from testbench.discovery.duts.nested_tests.some_helper import dut_3
 
 dut_4 = DUTSpec(
     "ghdl",

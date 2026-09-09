@@ -1,5 +1,6 @@
 import os
 import sys
+import warnings
 
 import pytest
 
@@ -18,28 +19,29 @@ def insert_cwd_in_path():
     sys.path.insert(0, os.getcwd())
 
 
+path_duts = "testbench/discovery/duts"
+
+
 def test_discover_test_modules():
-    modules = discover_test_modules("testbench/discovery")
+    modules = discover_test_modules(path_duts)
     module_paths = {m.path for m in modules}
 
     assert len(modules) == 2
     assert module_paths == {
-        "testbench/discovery/test_dut_discovery_1.py",
-        "testbench/discovery/nested_tests/test_dut_discovery_2.py",
+        f"{path_duts}/test_dut_discovery_1.py",
+        f"{path_duts}/nested_tests/test_dut_discovery_2.py",
     }
 
 
 def test_discover_duts():
-    modules = discover_test_modules("testbench/discovery")
+    modules = discover_test_modules(path_duts)
     dut_index = discover_duts(modules)
     dut_names = {
         module_name: set(duts.keys()) for module_name, duts in dut_index.items()
     }
 
-    module_name_1 = get_module_name("testbench/discovery/test_dut_discovery_1.py")
-    module_name_2 = get_module_name(
-        "testbench/discovery/nested_tests/test_dut_discovery_2.py"
-    )
+    module_name_1 = get_module_name(f"{path_duts}/test_dut_discovery_1.py")
+    module_name_2 = get_module_name(f"{path_duts}/nested_tests/test_dut_discovery_2.py")
     assert dut_names == {
         module_name_1: {"dut_1", "dut_2"},
         module_name_2: {"dut_3", "dut_4", "dut_5"},
@@ -47,7 +49,7 @@ def test_discover_duts():
 
 
 def test_discover_test_cases():
-    modules = discover_test_modules("testbench/discovery")
+    modules = discover_test_modules(path_duts)
     dut_index = discover_duts(modules)
     cases = discover_test_cases(modules, dut_index)
     case_names = {case.function.__name__ for case in cases}
@@ -79,3 +81,14 @@ def test_simple_marks():
     assert find_marks("abc") == {"test_mark_abc"}
     assert find_marks("efg") == {"test_mark_efg"}
     assert find_marks("hij", "klm") == {"test_mark_hij_klm"}
+
+
+def test_multiple_params():
+    modules = discover_test_modules("testbench/discovery/test_multiple_params.py")
+    dut_index = discover_duts(modules)
+
+    with warnings.catch_warnings(record=True) as recorded_warnings:
+        cases = discover_test_cases(modules, dut_index)
+
+        assert len(recorded_warnings) == 2
+        assert len(cases) == 0
