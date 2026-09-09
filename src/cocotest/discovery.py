@@ -1,9 +1,14 @@
-import inspect
 import os
 
 from .core_types import DUTSpec, TestCase, TestModule
 from .errors import DiscoveryError
 from .utils import get_module_name, get_test_dut, import_from_path, is_test_case
+
+ModuleDUTSpecs = dict[str, DUTSpec]
+"""Mapping dut_name->DUTSpec for a single module."""
+
+DUTSpecIndex = dict[str, ModuleDUTSpecs]
+"""Mapping module_name->dut_name->DUTSpec for all modules."""
 
 
 def is_test_file_name(name: str) -> bool:
@@ -26,6 +31,10 @@ def discover_test_files(test_path: str) -> list[str]:
 
     test_files = []
     for root, dirs, files in os.walk(test_path):
+        # Note: we make sure that the files are sorted in lexicographic order
+        # by sorting dirs and files here.
+        dirs.sort()
+        files.sort()
         for name in files:
             if is_test_file_name(name):
                 test_files.append(os.path.join(root, name))
@@ -42,24 +51,19 @@ def discover_test_modules(test_path: str) -> list[TestModule]:
     return test_modules
 
 
-ModuleDUTSpecs = dict[str, DUTSpec]
-"""Mapping dut_name->DUTSpec for a single module."""
-
-DUTSpecIndex = dict[str, ModuleDUTSpecs]
-"""Mapping module_name->dut_name->DUTSpec for all modules."""
-
-
 def discover_duts(test_modules: list[TestModule]) -> DUTSpecIndex:
     index: DUTSpecIndex = {}
     for module, path in test_modules:
         index[module.__name__] = {}
+
+        # Note: we prefer vars(module) to inspect.getmembers(module) because
+        # it preserves module definition/execution order
         for name, value in vars(module).items():
             if isinstance(value, DUTSpec):
                 index[module.__name__][name] = value
     return index
 
 
-# TODO: handle Test and Parameterized types from cocotb
 def discover_test_cases(
     test_modules: list[TestModule], dut_index: DUTSpecIndex
 ) -> list[TestCase]:
@@ -68,7 +72,10 @@ def discover_test_cases(
         duts: ModuleDUTSpecs = {}
         if module.__name__ in dut_index:
             duts = dut_index[module.__name__]
-        for name, candidate in inspect.getmembers(module):
+
+        # Note: we prefer vars(module) to inspect.getmembers(module) because
+        # it preserves module definition/execution order
+        for name, candidate in vars(module).items():
             if is_test_case(candidate, module=module, duts=duts):
                 cases.append(
                     TestCase(
