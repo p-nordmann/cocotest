@@ -47,7 +47,7 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "cocotb", specifier = "~=2.0" },
+    { name = "cocotb", specifier = "~=2.0.1" },
     { name = "psutil", specifier = ">=7.2.2" },
 ]
 
