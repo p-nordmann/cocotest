@@ -10,6 +10,11 @@ from .core_types import TestCase
 from .decorators import _get_marks
 
 
+@dataclass(frozen=True)
+class ExecutionOptions:
+    run_skipped: bool = False
+
+
 class TestStatus(StrEnum):
     PASS = "pass"
     FAIL = "fail"
@@ -35,10 +40,12 @@ class TestResult:
         ]
 
 
-def run_test(case: TestCase) -> TestResult:
+def run_test(case: TestCase, options: ExecutionOptions | None = None) -> TestResult:
+    if options is None:
+        options = ExecutionOptions()
     marks = _get_marks(case.function)
 
-    if "skip" in marks:
+    if "skip" in marks and not options.run_skipped:
         return TestResult(TestStatus.SKIP)
 
     result = _run_test(case)
