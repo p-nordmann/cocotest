@@ -49,7 +49,7 @@ from cocotest import DUTSpec
 
 dut = DUTSpec(
     simulator="ghdl",
-    sources=["testbench/heartbeat.vhd"],
+    sources=["testbench/heartbeat/heartbeat.vhd"],
     hdl_toplevel="heartbeat",
     lang="vhdl",
     build_args=["--std=08"],
