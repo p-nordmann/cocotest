@@ -1,5 +1,6 @@
 from cocotb.handle import HierarchyObject
 from cocotb.triggers import Timer
+from cocotb.types import Logic
 
 from cocotest import DUTSpec
 
@@ -15,3 +16,5 @@ dut = DUTSpec(
 
 async def test_heartbeat_pass(dut: HierarchyObject):
     await Timer(1, unit="us")
+    # Here we ensure the DUT is correctly passed to the test
+    assert dut.clk.value == Logic(1)

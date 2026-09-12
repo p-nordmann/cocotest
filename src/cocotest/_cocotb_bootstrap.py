@@ -45,7 +45,7 @@ async def test_case(dut: HierarchyObject):
         raise AssertionError(f"function {function_name} has too many parameters")
     dut_name = next(iter(params))
 
-    return await function({dut_name: dut})
+    return await function(**{dut_name: dut})
 
 
 # Hack the module name for display
