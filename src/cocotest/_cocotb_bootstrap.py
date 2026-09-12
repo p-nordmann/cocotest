@@ -19,6 +19,14 @@ module_path = os.environ["COCOTEST_TEST_MODULE"]
 function_name = os.environ["COCOTEST_TEST_FUNCTION"]
 cocotest_cwd = os.environ["COCOTEST_CWD"]
 
+# Make sure to retrieve the expected working directory from the
+# environment variables and change current working directory.
+# Otherwise, we get the current working directory from the simulator,
+# which will most likely not match the expected working directory in
+# the test case.
+# Note: this is important to do that before importing anything dynamically.
+os.chdir(cocotest_cwd)
+
 # Reproduce the same import as cocotest
 sys.path.insert(0, cocotest_import_root)
 module_name = get_module_name(module_path)
@@ -30,13 +38,6 @@ function = getattr(module, function_name)
 # TODO preprocess fixtures here
 @cocotb.test(name=function_name)
 async def test_case(dut: HierarchyObject):
-
-    # Make sure to retrieve the expected working directory from the
-    # environment variables and change current working directory.
-    # Otherwise, we get the current working directory from the simulator,
-    # which will most likely not match the expected working directory in
-    # the test case.
-    os.chdir(cocotest_cwd)
 
     # Recover the dut name from the function parameters
     params = inspect.signature(function).parameters
