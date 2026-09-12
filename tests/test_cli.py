@@ -92,3 +92,12 @@ def test_error_code_xfail():
         in output
     )
     assert code == 0
+
+
+def test_marks_cli_option():
+    code, output = _invoke("testbench/marks", "-m", "abc", "-m", "hij")
+
+    assert "testbench/marks/test_simple_marks.py::test_mark_abc: PASS" in output
+    assert "testbench/marks/test_simple_marks.py::test_mark_hij_klm: PASS" in output
+    assert "test_mark_efg" not in output
+    assert code == 0

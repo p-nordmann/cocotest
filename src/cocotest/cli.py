@@ -6,6 +6,7 @@ from contextlib import contextmanager
 from types import FrameType
 from uuid import uuid4
 
+from .decorators import _get_marks
 from .discovery import discover_duts, discover_test_cases, discover_test_modules
 from .execution import run_test
 from .utils import terminate_session
@@ -22,6 +23,12 @@ def main():
         nargs="?",
         help="test file or directory",
     )
+    parser.add_argument(
+        "-m",
+        "--mark",
+        action="append",
+        help="filter tests with the requested mark",
+    )
     args = parser.parse_args()
 
     # Make sure to prepend the current working directory to sys.path
@@ -31,6 +38,13 @@ def main():
     test_modules = discover_test_modules(args.path)
     dut_index = discover_duts(test_modules)
     cases = discover_test_cases(test_modules, dut_index)
+
+    if args.mark is not None:
+        cases = [
+            case
+            for case in cases
+            if any(m in _get_marks(case.function) for m in args.mark)
+        ]
 
     # Note: in the case of some simulators, it seems that SIGINT is ignored by the
     # subprocesses when cocotb is terminated. This can be painful when developing
