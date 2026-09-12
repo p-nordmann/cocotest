@@ -92,3 +92,14 @@ def test_multiple_params():
 
         assert len(recorded_warnings) == 2
         assert len(cases) == 0
+
+
+def test_dut_typo_should_raise_warning():
+    modules = discover_test_modules("testbench/heartbeat/test_heartbeat_2.py")
+    dut_index = discover_duts(modules)
+
+    with warnings.catch_warnings(record=True) as recorded_warnings:
+        cases = discover_test_cases(modules, dut_index)
+
+        assert len(recorded_warnings) == 1
+        assert len(cases) == 1

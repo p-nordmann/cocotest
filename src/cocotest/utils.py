@@ -52,11 +52,18 @@ def is_test_case(
         else:
             other_params_count += 1
 
-    if dut_params_count == 0:
-        return False
-
     filename = inspect.getsourcefile(candidate) or ""
     _, lineno = inspect.getsourcelines(candidate)
+
+    if dut_params_count == 0:
+        if other_params_count > 0:
+            warnings.warn_explicit(
+                f"function {candidate.__name__} looks like a test case but has no dut parameter. Is it a typo?",
+                UserWarning,
+                filename=filename,
+                lineno=lineno,
+            )
+        return False
     if dut_params_count > 1:
         warnings.warn_explicit(
             f"test case {candidate.__name__} has {dut_params_count} dut parameters",

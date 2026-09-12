@@ -27,3 +27,7 @@ def test_heartbeat_should_not_run_2(dut: HierarchyObject):
 
 async def not_a_test(dut: HierarchyObject):
     await Timer(1, unit="us")
+
+
+async def test_unknown_dut(dut_2):
+    await Timer(1, unit="us")
