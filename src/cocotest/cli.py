@@ -8,7 +8,7 @@ from uuid import uuid4
 
 from .decorators import _get_marks
 from .discovery import discover_duts, discover_test_cases, discover_test_modules
-from .execution import run_test
+from .execution import ExecutionOptions, run_test
 from .utils import terminate_session
 
 
@@ -29,6 +29,11 @@ def main():
         action="append",
         help="filter tests with the requested mark",
     )
+    parser.add_argument(
+        "--run-skipped",
+        action="store_true",
+        help="force skipped tests to run",
+    )
     args = parser.parse_args()
 
     # Make sure to prepend the current working directory to sys.path
@@ -46,6 +51,11 @@ def main():
             if any(m in _get_marks(case.function) for m in args.mark)
         ]
 
+    # We gather execution options for later.
+    options = ExecutionOptions(
+        run_skipped=args.run_skipped,
+    )
+
     # Note: in the case of some simulators, it seems that SIGINT is ignored by the
     # subprocesses when cocotb is terminated. This can be painful when developing
     # testbenches, so we make sure to kill the subprocesses when we receive SIGINT or SIGTERM.
@@ -53,7 +63,7 @@ def main():
         # Run test cases and exit with an error code.
         results = []
         for case in cases:
-            result = run_test(case)
+            result = run_test(case, options)
             print(f"{case.node_id}: {result.status.name}")
             results.append(result)
 
