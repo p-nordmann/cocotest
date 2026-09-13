@@ -1,10 +1,6 @@
 # cocotest
 
-Cocotest is a simple test orchestration framework for cocotb.
-
-## Status
-
-More README coming soon...
+Lightweight, opinionated test orchestration framework for cocotb.
 
 ## Quickstart
 
@@ -14,19 +10,13 @@ Cocotest should feel familiar for developers with experience in the Python ecosy
 
 ### Installation
 
-Currently, we do not provide a distribution on PyPI, but we intend to change that in the near future!
-
-For now, you may install from the Github repository instead. Example with uv or pip:
+You can install cocotest using pip or uv:
 
 ```sh
-# You may target master:
-uv add "cocotest @ git+https://github.com/p-nordmann/cocotest"
+pip install cocotest
 
-# Or you may target a specific revision:
-uv add "cocotest @ git+https://github.com/p-nordmann/cocotest@some_revision"
-
-# Similarly, with pip:
-pip install git+https://github.com/p-nordmann/cocotest@some_revision
+# Or with uv:
+uv add cocotest
 ```
 
 ### Getting started
@@ -99,11 +89,10 @@ For that reason, you need to install ghdl if you want to be able to run all of t
 Once you have all the dependencies installed, you can run the tests using pytest:
 
 ```sh
-# with uv:
-uv run pytest tests
-
-# or, if you have a virtual env active:
 pytest tests
+
+# Or with uv:
+uv run pytest tests
 ```
 
 ## License

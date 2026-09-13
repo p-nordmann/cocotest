@@ -1,13 +1,22 @@
 [project]
 name = "cocotest"
 version = "0.1.0"
-description = "Simple test orchestration framework for cocotb."
+description = "Lightweight, opinionated test orchestration framework for cocotb."
 readme = "README.md"
-authors = [
-    { name = "Pierre-Louis Nordmann", email = "pierrelouis.nordmann@gmail.com" },
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Pierre-Louis Nordmann" }]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Topic :: Software Development :: Testing",
 ]
 requires-python = ">=3.11"
 dependencies = ["cocotb~=2.0.1", "psutil>=7.2.2"]
+
+[project.urls]
+Homepage = "https://github.com/p-nordmann/cocotest"
+Repository = "https://github.com/p-nordmann/cocotest"
+Issues = "https://github.com/p-nordmann/cocotest/issues"
 
 [project.scripts]
 cocotest = "cocotest.cli:main"
