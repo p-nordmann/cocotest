@@ -61,7 +61,7 @@ def run_test(case: TestCase, options: ExecutionOptions | None = None) -> TestRes
 
 def _run_test(case: TestCase) -> TestResult:
     build_dir = os.path.join(
-        "sim_build", case.module.__name__, case.function.__name__
+        ".cocotest_cache", case.module.__name__, case.function.__name__
     )  # TODO: one build dir per dut?
 
     # cocotb Runner changes its failure semantics when PYTEST_CURRENT_TEST
